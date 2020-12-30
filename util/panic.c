@@ -1,7 +1,15 @@
+/*
+    static functions for spitting errors
+*/
+
+
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <dbus/dbus.h>
 
 
-void panic(const char* progName, char* msg) {
+static void panic(const char* progName, char* msg) {
     if (progName != NULL && msg != NULL) {
         printf("%s error:\t%s\n", progName, msg);
     } else {
@@ -11,7 +19,7 @@ void panic(const char* progName, char* msg) {
 }
 
 
-void panic_on_dbus_err(const char* progName, DBusError* err) {
+static void panic_on_dbus_err(const char* progName, DBusError* err) {
     if (dbus_error_is_set(err)) {
         char* msg;
         sprintf(msg, "DBus Error:\n\t%s\n\t%s\n", err->name, err->message);
