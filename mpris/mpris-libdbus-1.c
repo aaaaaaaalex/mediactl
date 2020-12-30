@@ -95,27 +95,11 @@ void mpris_load_media_player_names(char*** playerlistDest, int* playersc) {
     (*playersc) = 0;
 
     // send the ListNames command to the DBus
-    DBusMessage* msg = dbus_message_new_method_call(
+    DBusMessage* reply = call_method(
         "org.freedesktop.DBus", //destination
         "/", // path
         "org.freedesktop.DBus", // interface
         "ListNames"); // method
-    if (msg == NULL) panic("Could not create DBus message");
-
-    // send our message
-    DBusPendingCall* call;
-    dbus_bool_t success = dbus_connection_send_with_reply(con, msg, &call, 100);
-    if (!success || call == NULL) panic("DBus ListNames call unsuccessful");
-
-    // clean up and wait for a reply
-    dbus_connection_flush(con);
-    dbus_message_unref(msg);
-    dbus_pending_call_block(call);
-
-    // check for our reply
-    DBusMessage* reply = dbus_pending_call_steal_reply(call);
-    if (reply == NULL) panic("Got no reply from DBus ListNames call");
-    dbus_pending_call_unref(call);
 
     // will check this after attempting to get args
     DBusError err = {0};
