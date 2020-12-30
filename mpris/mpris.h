@@ -19,4 +19,4 @@ void mpris_load_media_player_names(char*** playerlistDest, int* playersc);
 
 // send the PlayPause method to the player specified by arg0
 // sent over the connection passed as arg1
-void mpris_play_pause(char* playerName);
+void mpris_call(char* playerName, char* method);

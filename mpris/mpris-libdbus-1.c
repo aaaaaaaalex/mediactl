@@ -134,10 +134,10 @@ void mpris_load_media_player_names(char*** playerlistDest, int* playersc) {
     dbus_message_unref(reply);
 }
 
-void mpris_play_pause(char* playerName) {
+void mpris_call(char* playerName, char* method) {
     call_method_and_forget(
         playerName,
         "/org/mpris/MediaPlayer2",
         "org.mpris.MediaPlayer2.Player",
-        "PlayPause");
+        method);
 }
