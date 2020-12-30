@@ -1,5 +1,5 @@
 /*
-    static functions for spitting errors
+    Report error and exit
 */
 
 #include <string.h>
