@@ -38,9 +38,9 @@ DBusMessage* call_method(
 
     // send the PlayPause command to the player
     DBusMessage* msg = dbus_message_new_method_call(
-        destination, //destination
-        path, // path
-        interface, // interface
+        destination,
+        path,
+        interface,
         method);
     if (msg == NULL) panic("Could not create DBus message");
 
