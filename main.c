@@ -12,7 +12,7 @@ int main(int argc, char** argv) {
 
     int i;
     for (i=0; i < playersc; i++) {
-        printf("%s\n", mediaPlayers[i] );
+        printf("%s\n", mediaPlayers[i]);
         mpris_play_pause(mediaPlayers[i]);
     }
 

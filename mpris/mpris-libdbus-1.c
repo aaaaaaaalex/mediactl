@@ -1,8 +1,10 @@
 #include <string.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <dbus/dbus.h>
 
 #include "util/panic.h"
+
 
 DBusConnection* con;
 void mpris_init() {
@@ -21,7 +23,70 @@ void mpris_free() {
     dbus_connection_unref(con);
 }
 
-// panics if any dbus error occurrs
+
+/*
+                    private funcs
+*/
+
+// call an mpris method over DBus and return DBusMessage reply.
+// BRO SERIOUSLY dont forget to unref the reply once you're done with it c:
+DBusMessage* call_method(
+        char* destination,
+        const char* path,
+        const char* interface,
+        const char* method ) {
+
+    // send the PlayPause command to the player
+    DBusMessage* msg = dbus_message_new_method_call(
+        destination, //destination
+        path, // path
+        interface, // interface
+        method);
+    if (msg == NULL) panic("Could not create DBus message");
+
+    // send our message
+    DBusPendingCall* call;
+    dbus_bool_t success = dbus_connection_send_with_reply(con, msg, &call, 100);
+    if (!success || call == NULL) {
+        char errMsg[512];
+        snprintf(errMsg, 512, "DBus %s call unsuccessful", method);
+        panic(errMsg);
+    }
+
+    // clean up and wait for a reply
+    dbus_connection_flush(con);
+    dbus_message_unref(msg);
+    dbus_pending_call_block(call);
+
+    // check for our reply
+    DBusMessage* reply = dbus_pending_call_steal_reply(call);
+    dbus_pending_call_unref(call);
+    if (reply == NULL) {
+        char errMsg[512];
+        snprintf(errMsg, 512, "Got no reply from DBus %s call", method);
+        panic(errMsg);
+    }
+
+    return reply;
+}
+
+// call_method, diregard any replies
+void call_method_and_forget(
+        char* destination,
+        const char* path,
+        const char* interface,
+        const char* method ) {
+
+    DBusMessage* reply = call_method(destination, path, interface, method);
+    dbus_message_unref(reply);
+}
+
+
+/*
+                    header definitions
+*/
+
+// load a list of media player names
 void mpris_load_media_player_names(char*** playerlistDest, int* playersc) {
     if ( playerlistDest == NULL || playersc == NULL || con == NULL ){
         panic("Bad args passed to loadMediaPlayerNames");
@@ -85,30 +150,10 @@ void mpris_load_media_player_names(char*** playerlistDest, int* playersc) {
     dbus_message_unref(reply);
 }
 
-// panics if any dbus error occurrs
 void mpris_play_pause(char* playerName) {
-    // send the PlayPause command to the player
-    DBusMessage* msg = dbus_message_new_method_call(
-        playerName, //destination
-        "/org/mpris/MediaPlayer2", // path
-        "org.mpris.MediaPlayer2.Player", // interface
-        "PlayPause"); // method
-    if (msg == NULL) panic("Could not create DBus message");
-
-    // send our message
-    DBusPendingCall* call;
-    dbus_bool_t success = dbus_connection_send_with_reply(con, msg, &call, 100);
-    if (!success || call == NULL) panic("DBus PlayPause call unsuccessful");
-
-    // clean up and wait for a reply
-    dbus_connection_flush(con);
-    dbus_message_unref(msg);
-    dbus_pending_call_block(call);
-
-    // check for our reply
-    DBusMessage* reply = dbus_pending_call_steal_reply(call);
-    if (reply == NULL) panic("Got no reply from DBus PlayPause call");
-
-    dbus_message_unref(reply);
-    dbus_pending_call_unref(call);
+    call_method_and_forget(
+        playerName,
+        "/org/mpris/MediaPlayer2",
+        "org.mpris.MediaPlayer2.Player",
+        "PlayPause");
 }
