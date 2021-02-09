@@ -3,7 +3,8 @@ Designed as a zero-redundancy alternative to [the accepted means of binding mult
 
 # Installation
 
-### Currently must be built from src, but its easy c:
+### Download the x86-64 binary, or...
+### build from src, its easy c:
 Requires libdbus-1 headers: `sudo apt update && sudo apt install -y libdbus-1-dev`
 
 then build... `./build.sh`
