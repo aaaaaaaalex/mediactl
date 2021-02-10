@@ -8,8 +8,7 @@ void mpris_free();
 */
 
 // loads names of mediaplayers into arg0
-// loads numbers of mediaplayers into arg1
-// uses the dbus connection passed as arg2
+// loads number of mediaplayers into arg1
 void mpris_load_media_player_names(char*** playerlistDest, int* playersc);
 
 
@@ -17,6 +16,6 @@ void mpris_load_media_player_names(char*** playerlistDest, int* playersc);
     FIRE-AND-FORGET METHODS
 */
 
-// send the PlayPause method to the player specified by arg0
-// sent over the connection passed as arg1
+// Send a method call to the player designated by arg0
+// The method to call is designated by arg1
 void mpris_call_and_forget(char* playerName, char* method);
