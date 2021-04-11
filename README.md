@@ -1,4 +1,4 @@
-# Ultra-barebones, Linux-only media-controls for VLC, your web browser, etc.
+# Ultra-barebones, Linux mediaplayer controls for VLC, your web browser, etc.
 Designed as a zero-redundancy alternative to [the accepted means of binding multimedia keys to i3](https://faq.i3wm.org/question/3747/enabling-multimedia-keys.1.html), but can also be used for general-purpose media control :D
 
 # Installation
